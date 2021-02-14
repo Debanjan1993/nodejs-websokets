@@ -1,6 +1,14 @@
 <template>
   <div id="app">
-    <div id="mario-chat">
+    <div id="title">
+      CHATROOM APP
+    </div>
+    <div v-if="!this.isHandleEntered" id="handle">
+      <input id="handleinput"  v-on:keypress.enter="setHandle" v-model=handle type="text" placeholder="Please enter your name and press enter" />
+    </div>
+    
+    <div v-if="this.isHandleEntered" id="mario-chat">
+      <!-- Chat window html -->
       <div id="chat-window">
         <div id="feedback">
           <p v-if="this.personTyping != ''"><em>{{this.personTyping}} is typing a message</em></p>
@@ -8,15 +16,18 @@
         <div id="output">
             <ul>
               <li v-for="message in messageObj" v-bind:key="message.id">
-                <div>
-                  <p><strong>{{message.handle}} : </strong>{{message.message}}</p>
+                <div id="listchat">
+                  <strong>{{message.handle}}</strong> : {{message.message}}
                 </div>
               </li>
             </ul>
         </div>
       </div>
-      <input v-model=handle type="text" placeholder="Handle" />
-      <input v-on:keypress="broadcast" v-model=message type="text" placeholder="Message" />
+      
+
+      <div id="message">
+          <input id="messageinput" v-on:keypress="broadcast" v-model=message type="text" placeholder="Message" />
+      </div>
       <button v-on:click="send">SEND</button>
     </div>
   </div>
@@ -33,7 +44,8 @@ export default {
       message: '',
       socket : null,
       messageObj : [],
-      personTyping : ''
+      personTyping : '',
+      isHandleEntered: false
     };
   },
   methods: {
@@ -47,6 +59,9 @@ export default {
       this.socket.emit('typing',{
         handle : this.handle
       })
+    },
+    setHandle(){
+      this.isHandleEntered = true;
     }
   },
   created() {
@@ -70,13 +85,14 @@ export default {
 <style>
 body{
     font-family: 'Nunito';
+    background: #E4E4E3;
 }
 
-h2{
+/* h2{
     font-size: 18px;
     padding: 10px 20px;
     color: #575ed8;
-}
+} */
 
 #mario-chat{
     max-width: 600px;
@@ -87,54 +103,106 @@ h2{
 }
 
 #chat-window{
-    height: 400px;
+    height: 600px;
     overflow: auto;
-    background: #f9f9f9;
+    background: #FFAC8F;
+    border: 4px solid #FF723E;
 }
 
-#output p{
+/* #output p{
     padding: 14px 0px;
     margin: 0 20px;
     border-bottom: 1px solid #e9e9e9;
     color: #555;
-}
+} */
 
-#feedback p{
+/* #feedback p{
     color: #aaa;
     padding: 14px 0px;
     margin: 0 20px;
-}
+} */
 
-#output strong{
+/* #output strong{
     color: #575ed8;
-}
+} */
 
-label{
+/* label{
     box-sizing: border-box;
     display: block;
     padding: 10px 20px;
+} */
+
+
+#title{
+  text-align: center;
+  color: #161616;
+  background: #CBCACA;
+  padding: 4px 4px;
+  font-size: 32px;
+  font-weight:bolder;
+  margin-bottom: 20px;
 }
 
-input{
-    padding: 10px 20px;
-    box-sizing: border-box;
-    background: #eee;
-    border: 0;
-    display: block;
-    width: 100%;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    font-family: Nunito;
-    font-size: 16px;
+#handle  {
+  margin: auto;
+  background: #FBE9E7;
+  border: 2px solid #C03800;
+  margin: 0 auto;
+  width: 50%;
+  padding: 5px 5px;
+}
+
+ #handleinput{
+  outline: none;
+  border: 0;
+  background: #FBE9E7;
+  font-style: italic;  
+  color: #161616;
+  font-weight: bolder;
+  width: 100%;
+} 
+
+#message{
+  padding: 5px 5px;
+  background: #FFCDBB;
+  border: 4px solid #FFAC8F;
+  margin-top: 4px;
+}
+
+#messageinput{
+   outline: none;
+   border: 0;
+   font-style: italic;  
+   font-weight: bolder;
+   width: 100%;
+   background: #FFCDBB;
+   color: #161616;
 }
 
 button{
-    background: #575ed8;
-    color: #fff;
+    background: #FF8B62;
+    color: #161616;
     font-size: 18px;
-    border: 0;
+    margin-top: 4px;
+    border: 4px solid #FF5916;
     padding: 12px 0;
     width: 100%;
-    border-radius: 0 0 2px 2px;
 }
+
+ul{
+  list-style: none;
+  padding: 4px;
+}
+
+#listchat{
+  width: max-content;
+  background: #FFCDBB;
+  border: 2px solid #FF5916;
+  padding: 2px 10px 2px 10px;
+  margin-bottom: 5px;
+  margin-left: 10px;
+  border-radius: 20%;
+}
+
+
 </style>
